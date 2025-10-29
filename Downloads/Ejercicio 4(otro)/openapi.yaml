@@ -1,0 +1,423 @@
+openapi: 3.0.3
+info:
+  title: Email Service API
+  description: |
+    Microservicio de notificaciones y emails para comunicación entre servicios.
+    
+    ## Características principales
+    - Envío de emails simulados
+    - Procesamiento asíncrono con Celery
+    - Logging estructurado
+    - Health checks
+    - Comunicación entre microservicios
+    
+    ## Endpoints disponibles
+    - `POST /api/contact/` - Enviar mensaje de contacto
+    - `POST /api/notify/` - Enviar notificación interna
+    - `GET /healthz/` - Verificación de salud del servicio
+  version: 1.0.0
+  contact:
+    name: Email Service Team
+    email: admin@empresa.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8002
+    description: Servidor de desarrollo
+  - url: https://email-service.empresa.com
+    description: Servidor de producción
+
+paths:
+  /api/contact/:
+    post:
+      summary: Enviar mensaje de contacto
+      description: |
+        Crea un nuevo mensaje de contacto y lo procesa de forma asíncrona.
+        El mensaje se almacena en la base de datos y se envía una notificación
+        al administrador del sistema.
+      tags:
+        - Contacto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - message
+              properties:
+                name:
+                  type: string
+                  maxLength: 255
+                  description: Nombre completo del remitente
+                  example: "Carlos Rivas"
+                email:
+                  type: string
+                  format: email
+                  description: Dirección de email del remitente
+                  example: "carlos@mail.com"
+                message:
+                  type: string
+                  description: Mensaje de contacto
+                  example: "Me interesa una colaboración"
+            examples:
+              ejemplo_completo:
+                summary: Ejemplo completo
+                value:
+                  name: "Carlos Rivas"
+                  email: "carlos@mail.com"
+                  message: "Me interesa una colaboración"
+      responses:
+        '201':
+          description: Mensaje de contacto creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [queued]
+                    description: Estado del procesamiento
+                    example: "queued"
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+                    description: Errores de validación
+                    example:
+                      name: ["Este campo es requerido."]
+                      email: ["Introduzca una dirección de correo válida."]
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error interno del servidor"
+    get:
+      summary: Listar mensajes de contacto
+      description: |
+        Lista todos los mensajes de contacto (solo para administración).
+        Requiere autenticación de administrador.
+      tags:
+        - Contacto
+      security:
+        - AdminAuth: []
+      responses:
+        '200':
+          description: Lista de mensajes de contacto
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ContactMessage'
+                  count:
+                    type: integer
+                    description: Número total de mensajes
+        '401':
+          description: No autorizado
+        '500':
+          description: Error interno del servidor
+
+  /api/notify/:
+    post:
+      summary: Enviar notificación interna
+      description: |
+        Envía una notificación interna a un email específico.
+        Utilizado por otros microservicios para comunicarse.
+      tags:
+        - Notificaciones
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - to
+                - subject
+                - body
+              properties:
+                to:
+                  type: string
+                  format: email
+                  description: Email destinatario
+                  example: "user@mail.com"
+                subject:
+                  type: string
+                  maxLength: 255
+                  description: Asunto del email
+                  example: "Nuevo post publicado"
+                body:
+                  type: string
+                  description: Cuerpo del mensaje
+                  example: "Se ha publicado un nuevo artículo en el blog..."
+            examples:
+              notificacion_blog:
+                summary: Notificación de blog
+                value:
+                  to: "user@mail.com"
+                  subject: "Nuevo post publicado"
+                  body: "Se ha publicado un nuevo artículo en el blog: 'Introducción a Django'"
+      responses:
+        '201':
+          description: Notificación enviada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [sent]
+                    description: Estado del envío
+                  notification_log_id:
+                    type: string
+                    format: uuid
+                    description: ID del log de notificación
+                  processing_time_ms:
+                    type: integer
+                    description: Tiempo de procesamiento en milisegundos
+        '400':
+          description: Datos de entrada inválidos
+        '500':
+          description: Error interno del servidor
+    get:
+      summary: Listar logs de notificaciones
+      description: |
+        Lista todos los logs de notificaciones (solo para administración).
+        Requiere autenticación de administrador.
+      tags:
+        - Notificaciones
+      security:
+        - AdminAuth: []
+      responses:
+        '200':
+          description: Lista de logs de notificaciones
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/NotificationLog'
+                  count:
+                    type: integer
+                    description: Número total de logs
+        '401':
+          description: No autorizado
+        '500':
+          description: Error interno del servidor
+
+  /healthz/:
+    get:
+      summary: Verificación de salud del servicio
+      description: |
+        Verifica el estado de salud del servicio y sus dependencias.
+        Incluye verificación de base de datos, Redis y otros servicios.
+      tags:
+        - Salud
+      responses:
+        '200':
+          description: Servicio saludable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckResponse'
+        '503':
+          description: Servicio no saludable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckResponse'
+
+components:
+  schemas:
+    ContactMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID único del mensaje
+        name:
+          type: string
+          description: Nombre del remitente
+        email:
+          type: string
+          format: email
+          description: Email del remitente
+        message:
+          type: string
+          description: Mensaje de contacto
+        created_at:
+          type: string
+          format: date-time
+          description: Fecha de creación
+        status:
+          type: string
+          enum: [pending, processing, sent, failed]
+          description: Estado del mensaje
+      required:
+        - id
+        - name
+        - email
+        - message
+        - created_at
+        - status
+
+    NotificationLog:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID único del log
+        to_email:
+          type: string
+          format: email
+          description: Email destinatario
+        subject:
+          type: string
+          description: Asunto del email
+        notification_type:
+          type: string
+          enum: [contact, internal, system]
+          description: Tipo de notificación
+        sent_at:
+          type: string
+          format: date-time
+          description: Fecha de envío
+        status:
+          type: string
+          enum: [sent, failed, pending]
+          description: Estado del envío
+        processing_time_ms:
+          type: integer
+          description: Tiempo de procesamiento en milisegundos
+      required:
+        - id
+        - to_email
+        - subject
+        - notification_type
+        - sent_at
+        - status
+
+    ServiceHealth:
+      type: object
+      properties:
+        service_name:
+          type: string
+          description: Nombre del servicio
+        is_healthy:
+          type: boolean
+          description: ¿Está el servicio saludable?
+        last_check:
+          type: string
+          format: date-time
+          description: Última verificación
+        response_time_ms:
+          type: integer
+          description: Tiempo de respuesta en milisegundos
+        error_message:
+          type: string
+          description: Mensaje de error si aplica
+      required:
+        - service_name
+        - is_healthy
+        - last_check
+
+    HealthCheckResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+          description: Estado general del servicio
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp de la verificación
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceHealth'
+          description: Estado de servicios dependientes
+        uptime:
+          type: string
+          description: Tiempo de actividad del servicio
+      required:
+        - status
+        - timestamp
+        - services
+        - uptime
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Mensaje de error
+        errors:
+          type: object
+          description: Errores de validación detallados
+      required:
+        - error
+
+  securitySchemes:
+    AdminAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token JWT de administrador
+
+  examples:
+    ContactMessageExample:
+      summary: Ejemplo de mensaje de contacto
+      value:
+        id: "123e4567-e89b-12d3-a456-426614174000"
+        name: "Carlos Rivas"
+        email: "carlos@mail.com"
+        message: "Me interesa una colaboración"
+        created_at: "2024-01-15T10:30:00Z"
+        status: "sent"
+
+    NotificationLogExample:
+      summary: Ejemplo de log de notificación
+      value:
+        id: "123e4567-e89b-12d3-a456-426614174001"
+        to_email: "admin@empresa.com"
+        subject: "Nuevo mensaje de contacto de Carlos Rivas"
+        notification_type: "contact"
+        sent_at: "2024-01-15T10:30:05Z"
+        status: "sent"
+        processing_time_ms: 150
+
+tags:
+  - name: Contacto
+    description: Endpoints para mensajes de contacto
+  - name: Notificaciones
+    description: Endpoints para notificaciones internas
+  - name: Salud
+    description: Endpoints de verificación de salud
+
+

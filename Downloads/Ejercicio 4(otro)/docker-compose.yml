@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: email_service
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis para Celery
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Servicio de Email
+  email-service:
+    build: .
+    ports:
+      - "8002:8002"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=email_service
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+      - ./sent_emails:/app/sent_emails
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn --bind 0.0.0.0:8002 --workers 3 email_service.wsgi:application"
+
+  # Worker de Celery
+  celery-worker:
+    build: .
+    environment:
+      - DB_HOST=db
+      - DB_NAME=email_service
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+      - ./sent_emails:/app/sent_emails
+    command: celery -A email_service worker --loglevel=info --queues=emails,maintenance
+
+  # Beat de Celery (tareas programadas)
+  celery-beat:
+    build: .
+    environment:
+      - DB_HOST=db
+      - DB_NAME=email_service
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+    command: celery -A email_service beat --loglevel=info
+
+  # Flower (monitoreo de Celery)
+  flower:
+    build: .
+    ports:
+      - "5555:5555"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=email_service
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+    command: celery -A email_service flower --port=5555
+
+volumes:
+  postgres_data:
+
+

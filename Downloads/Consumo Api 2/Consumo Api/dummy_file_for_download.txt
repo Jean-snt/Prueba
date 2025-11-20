@@ -1,0 +1,2 @@
+Este es un archivo dummy para simular la descarga.
+Puedes reemplazarlo por cualquier contenido real para pruebas.

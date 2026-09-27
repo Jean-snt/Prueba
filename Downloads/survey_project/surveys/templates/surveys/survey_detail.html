@@ -1,0 +1,3 @@
+<h2>{{ survey.title }}</h2>
+<p>{{ survey.description }}</p>
+<a href="{% url 'surveys:submit_response' survey.id %}">Responder</a>

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="text-align: center; margin-top: 50px;">
+    <h1>¡Gracias por participar!</h1>
+    <p>Tu respuesta ha sido registrada exitosamente.</p>
+
+    {% if user.is_authenticated %}
+        <p>Puedes ver más encuestas disponibles o revisar tus respuestas.</p>
+        <a href="{% url 'surveys:survey_list' %}" class="btn btn-primary">Ver más encuestas</a>
+    {% else %}
+        <a href="{% url 'surveys:survey_list' %}" class="btn btn-primary">Volver al listado</a>
+    {% endif %}
+</div>
+{% endblock %}

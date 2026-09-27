@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Verificar Cuenta - Cuestom{% endblock %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-5 col-lg-4 col-xl-3">
+            <div class="card shadow-lg border-0" style="border-radius: 20px;">
+                <div class="card-body p-5">
+                    <!-- Logo y título de Cuestom -->
+                    <div class="text-center mb-4">
+                        <h1 class="display-4 fw-bold mb-3" style="background: linear-gradient(45deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                            Cuestom
+                        </h1>
+                        <div class="mb-3">
+                            <i class="fas fa-shield-check" style="font-size: 3rem; color: #667eea;"></i>
+                        </div>
+                        <h4 class="fw-bold mb-2">Verificar tu cuenta</h4>
+                        <p class="text-muted">Hola {{ user_full_name }},</p>
+                        <p class="text-muted">Hemos enviado un código de 6 dígitos a tu email. Ingrésalo para activar tu cuenta.</p>
+                    </div>
+
+                    <!-- Mensajes -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Formulario de verificación -->
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="verification_code" class="form-label fs-6">Código de verificación</label>
+                            <input 
+                                type="text" 
+                                class="form-control form-control-lg text-center" 
+                                id="verification_code" 
+                                name="verification_code" 
+                                required 
+                                maxlength="6"
+                                pattern="[0-9]{6}"
+                                placeholder="000000"
+                                style="border-radius: 10px; font-size: 1.5rem; letter-spacing: 0.5rem;"
+                                autocomplete="off"
+                            >
+                            <div class="invalid-feedback">
+                                Por favor ingresa el código de 6 dígitos.
+                            </div>
+                            <div class="form-text">
+                                El código expira en 15 minutos
+                            </div>
+                        </div>
+
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn btn-lg text-white fw-bold py-3" style="background: linear-gradient(45deg, #667eea, #764ba2); border: none; border-radius: 10px;">
+                                Verificar Cuenta
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Opciones adicionales -->
+                    <div class="text-center">
+                        <p class="text-muted mb-2">¿No recibiste el código?</p>
+                        <form method="post" action="{% url 'surveys:resend_verification_code' username %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link p-0 text-decoration-none" style="color: #667eea;">
+                                Reenviar código
+                            </button>
+                        </form>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <p class="text-muted mb-0">¿Problemas con la verificación?</p>
+                        <a href="{% url 'login' %}" class="text-decoration-none" style="color: #667eea;">
+                            Volver al login
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Validación de formulario Bootstrap
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+
+        // Auto-format del código de verificación
+        var codeInput = document.getElementById('verification_code');
+        codeInput.addEventListener('input', function(e) {
+            // Solo permitir números
+            this.value = this.value.replace(/[^0-9]/g, '');
+            
+            // Limitar a 6 dígitos
+            if (this.value.length > 6) {
+                this.value = this.value.slice(0, 6);
+            }
+        });
+
+        // Auto-submit cuando se completen 6 dígitos
+        codeInput.addEventListener('input', function(e) {
+            if (this.value.length === 6) {
+                // Pequeño delay para mejor UX
+                setTimeout(() => {
+                    if (this.value.length === 6) {
+                        this.form.submit();
+                    }
+                }, 500);
+            }
+        });
+    }, false);
+})();
+</script>
+{% endblock %}

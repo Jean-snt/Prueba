@@ -1,0 +1,10 @@
+from django.apps import AppConfig
+
+
+class SurveysConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'surveys'
+
+    def ready(self):
+        import surveys.signals
+        import surveys.models.user_profile  # Asegurar que se cargue el modelo

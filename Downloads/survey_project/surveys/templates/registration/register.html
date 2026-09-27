@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}Registro - Cuestom{% endblock %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-6 col-lg-5 col-xl-4">
+            <div class="card shadow-lg border-0" style="border-radius: 20px;">
+                <div class="card-body p-5">
+                    <!-- Logo y título de Cuestom -->
+                    <div class="text-center mb-4">
+                        <h1 class="display-4 fw-bold mb-2" style="background: linear-gradient(45deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                            Cuestom
+                        </h1>
+                        <p class="text-muted">Únete a nuestra comunidad de encuestas</p>
+                    </div>
+
+                    <!-- Mensajes -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Formulario de registro -->
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name" class="form-label">Nombre *</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" required>
+                                <div class="invalid-feedback">
+                                    Por favor ingresa tu nombre.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name" class="form-label">Apellidos *</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" required>
+                                <div class="invalid-feedback">
+                                    Por favor ingresa tus apellidos.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Nombre de usuario *</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                            <div class="form-text">Este será tu identificador único en las encuestas.</div>
+                            <div class="invalid-feedback">
+                                Por favor elige un nombre de usuario.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                            <div class="invalid-feedback">
+                                Por favor ingresa un email válido.
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">Contraseña *</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <div class="invalid-feedback">
+                                    Por favor ingresa una contraseña.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="password_confirm" class="form-label">Confirmar contraseña *</label>
+                                <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
+                                <div class="invalid-feedback">
+                                    Por favor confirma tu contraseña.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="age" class="form-label">Edad</label>
+                                <input type="number" class="form-control" id="age" name="age" min="13" max="120">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="country" class="form-label">País</label>
+                                <select class="form-select" id="country" name="country">
+                                    <option value="">Selecciona tu país</option>
+                                    <option value="MX">México</option>
+                                    <option value="US">Estados Unidos</option>
+                                    <option value="ES">España</option>
+                                    <option value="AR">Argentina</option>
+                                    <option value="CO">Colombia</option>
+                                    <option value="PE">Perú</option>
+                                    <option value="CL">Chile</option>
+                                    <!-- Agregar más países según necesidad -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="phone_number" class="form-label">Número de celular</label>
+                            <input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="+52 123 456 7890">
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-lg text-white fw-bold" style="background: linear-gradient(45deg, #667eea, #764ba2); border: none; border-radius: 10px;">
+                                Crear cuenta en Cuestom
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="text-muted">¿Ya tienes cuenta? 
+                            <a href="{% url 'login' %}" class="text-decoration-none fw-bold" style="color: #667eea;">
+                                Inicia sesión
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Validación de formulario Bootstrap
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                // Validar que las contraseñas coincidan
+                var password = document.getElementById('password').value;
+                var passwordConfirm = document.getElementById('password_confirm').value;
+                
+                if (password !== passwordConfirm) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    document.getElementById('password_confirm').setCustomValidity('Las contraseñas no coinciden');
+                } else {
+                    document.getElementById('password_confirm').setCustomValidity('');
+                }
+                
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+{% endblock %}

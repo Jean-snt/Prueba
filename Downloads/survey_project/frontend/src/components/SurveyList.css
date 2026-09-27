@@ -1,0 +1,113 @@
+/* Estilos para SurveyList Cards */
+.survey-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: visible;
+}
+
+.survey-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+}
+
+.survey-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 4px 4px 0 0;
+}
+
+.survey-card.active::before {
+  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+}
+
+.survey-card.inactive::before {
+  background: linear-gradient(90deg, #9E9E9E, #BDBDBD);
+}
+
+/* Gradientes para botones */
+.gradient-button {
+  background: linear-gradient(45deg, #2196F3 30%, #21CBF3 90%);
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.gradient-button:hover {
+  background: linear-gradient(45deg, #1976D2 30%, #0288D1 90%);
+  transform: scale(1.02);
+}
+
+.gradient-button:disabled {
+  background: #ccc;
+  color: #666;
+}
+
+/* Animaciones para avatares */
+.creator-avatar {
+  transition: all 0.3s ease;
+}
+
+.survey-card:hover .creator-avatar {
+  transform: scale(1.1);
+}
+
+/* Estilos para badges de respuestas */
+.response-badge {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .survey-card {
+    margin-bottom: 16px;
+  }
+  
+  .survey-card:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Estilos para el título principal */
+.main-title {
+  background: linear-gradient(45deg, #2196F3 30%, #21CBF3 90%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* Estilos para las banderas */
+.country-flag {
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Estilos para las barras de progreso de países */
+.country-progress {
+  height: 6px;
+  border-radius: 3px;
+  background-color: #f5f5f5;
+}
+
+.country-progress .MuiLinearProgress-bar {
+  border-radius: 3px;
+  background: linear-gradient(90deg, #2196F3, #21CBF3);
+}

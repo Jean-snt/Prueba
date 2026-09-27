@@ -1,0 +1,201 @@
+# ============================================================================
+# GITIGNORE OPTIMIZADO PARA PROYECTO CUESTOM
+# Cloud-Native AWS + Django + React
+# ============================================================================
+
+# ===== CREDENCIALES Y SECRETOS (CRÍTICO - NUNCA SUBIR) =====
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+.env.test
+*.pem
+*.key
+*.crt
+secrets.json
+DATABASE_CREDENTIALS.md
+db_credentials.md
+aws-credentials.json
+
+# ===== BASE DE DATOS =====
+*.sqlite3
+db.sqlite3
+*.db
+backup_sqlite/
+data_backup_total.json
+
+# ===== PYTHON =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+.tox/
+.hypothesis/
+htmlcov/
+
+# ===== DJANGO =====
+*.log
+local_settings.py
+media/
+staticfiles/
+static_root/
+*.mo
+
+# ===== ENTORNO VIRTUAL =====
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+virtualenv/
+
+# ===== NODE.JS / REACT =====
+node_modules/
+frontend/node_modules/
+frontend/build/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp
+.pnp.js
+.eslintcache
+
+# ===== IDES Y EDITORES =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*~
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ===== SISTEMA OPERATIVO =====
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ===== AWS =====
+.aws/
+aws-config.json
+terraform.tfstate
+terraform.tfstate.backup
+.terraform/
+*.tfvars
+cdk.out/
+.serverless/
+
+# ===== DOCKER =====
+*.dockerfile.swp
+docker-compose.override.yml
+
+# ===== TESTING =====
+coverage/
+.nyc_output/
+test-results/
+junit.xml
+*.test.js.snap
+
+# ===== LOGS =====
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ===== TEMPORALES Y BACKUP =====
+*.bak
+*.tmp
+*.temp
+*~
+.cache/
+.temp/
+tmp/
+temp/
+backup/
+*.backup
+
+# ===== ARCHIVOS DE PROYECTO ESPECÍFICOS =====
+scripts/clean_postgres.py
+scripts/create_postgres_db.py
+scripts/import_final.py
+scripts/set_vip.py
+scripts/iniciar_sistema_completo.bat
+CORRECCIONES_CRITICAS_APLICADAS.md
+
+# ===== JUPYTER NOTEBOOKS =====
+.ipynb_checkpoints/
+*.ipynb
+
+# ===== CERTIFICADOS Y KEYS =====
+*.pem
+*.key
+*.csr
+*.crt
+*.der
+*.p12
+*.pfx
+
+# ===== MONITOREO Y PROFILING =====
+.profiling/
+*.prof
+*.lprof
+*.pyprof
+
+# ===== CARPETAS VACÍAS O ESPECÍFICAS =====
+.qodo/
+
+# ============================================================================
+# IMPORTANTE: 
+# - .env contiene credenciales sensibles (DB, AWS, PayPal)
+# - media/ contiene archivos de usuarios (subir a S3 en producción)
+# - node_modules/ y __pycache__/ son regenerables
+# ============================================================================
+
+# ===== MANTENER EN GIT (! para no ignorar) =====
+!.gitkeep
+!.env.example
+!README.md
+!requirements.txt
+!Dockerfile
+!docker-compose.yml

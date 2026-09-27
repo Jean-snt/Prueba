@@ -1,0 +1,142 @@
+# ============================================================================
+# DOCKER COMPOSE - Entorno de desarrollo local
+# ============================================================================
+# Ejecutar con: docker-compose up -d
+# Ver logs: docker-compose logs -f
+# Detener: docker-compose down
+
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: cuestom_db
+    environment:
+      POSTGRES_DB: cuestom_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=es_PE.UTF-8 --lc-ctype=es_PE.UTF-8"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cuestom_network
+
+  # Backend Django
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cuestom_backend
+    command: >
+      sh -c "python migrate.py &&
+             gunicorn survey_project.wsgi:application
+             --bind 0.0.0.0:8000
+             --workers 2
+             --threads 2
+             --timeout 120
+             --reload
+             --access-logfile -
+             --error-logfile -"
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=True
+      - DATABASE_URL=postgresql://postgres:${DB_PASSWORD:-postgres}@db:5432/cuestom_db
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-django-insecure-local-dev-key-change-in-production}
+      - ALLOWED_HOSTS=localhost,127.0.0.1,web
+      - EMAIL_HOST=${EMAIL_HOST:-smtp.gmail.com}
+      - EMAIL_PORT=${EMAIL_PORT:-587}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - PAYPAL_CLIENT_ID=${PAYPAL_CLIENT_ID}
+      - PAYPAL_CLIENT_SECRET=${PAYPAL_CLIENT_SECRET}
+      - PAYPAL_MODE=${PAYPAL_MODE:-sandbox}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health/', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    networks:
+      - cuestom_network
+
+  # Nginx (opcional, para servir estáticos en desarrollo)
+  nginx:
+    image: nginx:alpine
+    container_name: cuestom_nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - static_volume:/app/staticfiles:ro
+      - media_volume:/app/media:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+    networks:
+      - cuestom_network
+    profiles:
+      - with-nginx
+
+volumes:
+  postgres_data:
+    driver: local
+  static_volume:
+    driver: local
+  media_volume:
+    driver: local
+
+networks:
+  cuestom_network:
+    driver: bridge
+
+# ============================================================================
+# COMANDOS ÚTILES:
+# ============================================================================
+#
+# Iniciar servicios:
+#   docker-compose up -d
+#
+# Ver logs en tiempo real:
+#   docker-compose logs -f web
+#
+# Ejecutar migraciones:
+#   docker-compose exec web python manage.py migrate
+#
+# Crear superusuario:
+#   docker-compose exec web python manage.py createsuperuser
+#
+# Acceder al shell de Django:
+#   docker-compose exec web python manage.py shell
+#
+# Acceder al shell de PostgreSQL:
+#   docker-compose exec db psql -U postgres -d cuestom_db
+#
+# Detener servicios:
+#   docker-compose down
+#
+# Detener y eliminar volúmenes (¡CUIDADO! Borra la BD):
+#   docker-compose down -v
+#
+# Rebuild de imágenes:
+#   docker-compose up -d --build
+#
+# Iniciar con Nginx:
+#   docker-compose --profile with-nginx up -d
+#
+# ============================================================================

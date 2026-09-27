@@ -1,0 +1,63 @@
+<h2>Responde la encuesta: {{ survey.title }}</h2>
+<p>{{ survey.description }}</p>
+
+<form method="post">
+  {% csrf_token %}
+
+  {% for q in questions %}
+    <div class="question">
+      <p><strong>{{ forloop.counter }}. {{ q.text }}</strong></p>
+
+      {% if q.type == 'text' %}
+        <textarea name="question_{{ q.id }}" rows="4" cols="60" placeholder="Escribe tu respuesta aquí..."></textarea>
+
+      {% elif q.type == 'radio' %}
+        {% for choice in q.choices.all %}
+          <label>
+            <input type="radio" name="question_{{ q.id }}" value="{{ choice.id }}">
+            {{ choice.text }}
+          </label><br>
+        {% endfor %}
+
+      {% elif q.type == 'checkbox' %}
+        {% for choice in q.choices.all %}
+          <label>
+            <input type="checkbox" name="question_{{ q.id }}" value="{{ choice.id }}">
+            {{ choice.text }}
+          </label><br>
+        {% endfor %}
+
+      {% elif q.type == 'select' %}
+        <select name="question_{{ q.id }}">
+          <option value="">-- Selecciona --</option>
+          {% for choice in q.choices.all %}
+            <option value="{{ choice.id }}">{{ choice.text }}</option>
+          {% endfor %}
+        </select>
+
+      {% elif q.type == 'scale' %}
+        {% for i in scale_range %}
+          <label>
+            <input type="radio" name="question_{{ q.id }}" value="{{ i }}">
+            {{ i }}
+          </label>
+        {% endfor %}
+
+      {% else %}
+        <!-- fallback: texto -->
+        <input type="text" name="question_{{ q.id }}">
+      {% endif %}
+    </div>
+    <hr>
+  {% endfor %}
+
+  <!-- Campo de comentario general -->
+  <div class="general-comment">
+    <label for="general_comment"><strong>Comentario general (opcional):</strong></label><br>
+    <textarea name="general_comment" id="general_comment" rows="4" cols="80"
+              placeholder="Deja aquí un comentario general sobre la encuesta (opcional)"></textarea>
+  </div>
+
+  <br>
+  <button type="submit">Enviar</button>
+</form>

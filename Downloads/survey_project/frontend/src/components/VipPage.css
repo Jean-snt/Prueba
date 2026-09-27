@@ -1,0 +1,817 @@
+/* VipPage.css - Estilos para la página VIP rediseñada */
+
+/* Animaciones suaves */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animaciones VIP específicas */
+@keyframes vipPulse {
+  0% {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(255, 215, 0, 1);
+    transform: scale(1.05);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+    transform: scale(1);
+  }
+}
+
+@keyframes vipGlow {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+@keyframes crownFloat {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg); 
+  }
+  50% { 
+    transform: translateY(-3px) rotate(5deg); 
+  }
+}
+
+@keyframes diamondSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes upgradeGlow {
+  0% {
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(76, 175, 80, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+  }
+}
+
+/* Clase para efectos dorados */
+.gold-shimmer {
+  background: linear-gradient(
+    90deg,
+    #ffd700 0%,
+    #ffed4e 25%,
+    #fff 50%,
+    #ffed4e 75%,
+    #ffd700 100%
+  );
+  background-size: 200px 100%;
+  animation: shimmer 2s infinite;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Efectos de hover para las tarjetas */
+.vip-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.vip-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Efectos especiales para tarjetas de upgrade */
+.upgrade-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.upgrade-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+  animation: upgradeGlow 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Botones con efectos especiales */
+.vip-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.vip-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.vip-button:hover::before {
+  left: 100%;
+}
+
+/* Efectos de seguridad */
+.security-badge {
+  position: relative;
+  animation: pulse 2s infinite;
+}
+
+.security-badge::after {
+  content: '🔒';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 12px;
+  animation: pulse 1.5s infinite;
+}
+
+/* Estilos para el upload de archivos */
+.upload-area {
+  border: 2px dashed #8C4EFF;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+}
+
+.upload-area:hover {
+  border-color: #ffd700;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 237, 78, 0.1));
+  transform: scale(1.02);
+}
+
+.upload-area.has-file {
+  border-color: #4caf50;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(102, 187, 106, 0.1));
+}
+
+/* Efectos para los iconos de pago */
+.payment-icon {
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.payment-icon:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.2));
+}
+
+/* Estilos para los chips de seguridad */
+.security-chip {
+  background: rgba(255, 255, 255, 0.2);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.security-chip:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Efectos para el QR */
+.qr-container {
+  position: relative;
+  display: inline-block;
+}
+
+.qr-container::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border: 2px solid #ffd700;
+  border-radius: 12px;
+  animation: pulse 2s infinite;
+  opacity: 0.5;
+}
+
+/* Estilos para el titular de cuenta */
+.account-holder {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 237, 78, 0.2));
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  position: relative;
+}
+
+.account-holder::before {
+  content: '🔒';
+  position: absolute;
+  top: -8px;
+  left: 10px;
+  background: #ffd700;
+  padding: 4px 8px;
+  border-radius: 50%;
+  font-size: 12px;
+}
+
+/* Estilos para información VIP mejorada */
+.vip-info-card {
+  background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.vip-info-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+  animation: shimmer 3s infinite;
+}
+
+/* Estilos para indicadores de tiempo */
+.time-indicator {
+  position: relative;
+  padding: 12px 20px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.time-indicator.warning {
+  background: linear-gradient(45deg, rgba(255, 152, 0, 0.2), rgba(255, 183, 77, 0.2));
+  border: 2px solid rgba(255, 152, 0, 0.4);
+  animation: pulse 2s infinite;
+}
+
+.time-indicator.danger {
+  background: linear-gradient(45deg, rgba(244, 67, 54, 0.2), rgba(229, 115, 115, 0.2));
+  border: 2px solid rgba(244, 67, 54, 0.4);
+  animation: pulse 1.5s infinite;
+}
+
+.time-indicator.success {
+  background: linear-gradient(45deg, rgba(76, 175, 80, 0.2), rgba(102, 187, 106, 0.2));
+  border: 2px solid rgba(76, 175, 80, 0.4);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .vip-card {
+    margin-bottom: 1rem;
+  }
+  
+  .upload-area {
+    padding: 1rem;
+  }
+  
+  .payment-icon {
+    font-size: 2rem !important;
+  }
+  
+  .vip-info-card {
+    margin: 1rem 0;
+  }
+}
+
+/* Efectos de carga */
+.loading-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Estilos para los diálogos */
+.payment-dialog {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.payment-dialog .MuiDialog-paper {
+  background: rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Efectos para los botones de archivo */
+.file-input-button {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.file-input-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.file-input-button.has-file {
+  background: linear-gradient(45deg, #4caf50, #66bb6a) !important;
+}
+
+.file-input-button.has-file:hover {
+  background: linear-gradient(45deg, #43a047, #5cb85c) !important;
+}
+
+/* Animaciones de entrada */
+.fade-in {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.fade-in-delay-1 {
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.fade-in-delay-2 {
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.fade-in-delay-3 {
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+/* Estilos para el estado VIP activo */
+.vip-active-badge {
+  background: linear-gradient(45deg, #4caf50, #66bb6a);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: pulse 2s infinite;
+}
+
+/* Estilos para el estado pendiente */
+.pending-review-badge {
+  background: linear-gradient(45deg, #ff9800, #ffb74d);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Efectos de glassmorphism */
+.glass-card {
+  background: rgba(255, 255, 255, 0.25);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* Estilos para los iconos de verificación */
+.verification-icon {
+  color: #4caf50;
+  animation: pulse 1.5s infinite;
+}
+
+/* Efectos de hover para los métodos de pago */
+.payment-method-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.payment-method-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.payment-method-card.selected {
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+/* Estilos personalizados para SweetAlert2 */
+.swal-popup-custom {
+  border-radius: 20px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+  border: 2px solid #ffd700 !important;
+}
+
+.swal-title-custom {
+  color: #8C4EFF !important;
+  font-weight: bold !important;
+  font-size: 28px !important;
+}
+
+.swal-button-custom {
+  background: linear-gradient(45deg, #8C4EFF, #7113B8) !important;
+  border: none !important;
+  border-radius: 25px !important;
+  padding: 12px 30px !important;
+  font-weight: bold !important;
+  font-size: 16px !important;
+  transition: all 0.3s ease !important;
+}
+
+.swal-button-custom:hover {
+  background: linear-gradient(45deg, #5a6fd8, #6a4190) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Animación para el popup */
+.swal2-popup.swal2-show {
+  animation: swalSlideInUp 0.4s ease-out !important;
+}
+
+@keyframes swalSlideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Clase para efectos dorados */
+.gold-shimmer {
+  background: linear-gradient(
+    90deg,
+    #ffd700 0%,
+    #ffed4e 25%,
+    #fff 50%,
+    #ffed4e 75%,
+    #ffd700 100%
+  );
+  background-size: 200px 100%;
+  animation: shimmer 2s infinite;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Efectos de hover para las tarjetas */
+.vip-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.vip-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Botones con efectos especiales */
+.vip-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.vip-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.vip-button:hover::before {
+  left: 100%;
+}
+
+/* Efectos de seguridad */
+.security-badge {
+  position: relative;
+  animation: pulse 2s infinite;
+}
+
+.security-badge::after {
+  content: '🔒';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  font-size: 12px;
+  animation: pulse 1.5s infinite;
+}
+
+/* Estilos para el upload de archivos */
+.upload-area {
+  border: 2px dashed #8C4EFF;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+}
+
+.upload-area:hover {
+  border-color: #ffd700;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 237, 78, 0.1));
+  transform: scale(1.02);
+}
+
+.upload-area.has-file {
+  border-color: #4caf50;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(102, 187, 106, 0.1));
+}
+
+/* Efectos para los iconos de pago */
+.payment-icon {
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.payment-icon:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.2));
+}
+
+/* Estilos para los chips de seguridad */
+.security-chip {
+  background: rgba(255, 255, 255, 0.2);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.security-chip:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Efectos para el QR */
+.qr-container {
+  position: relative;
+  display: inline-block;
+}
+
+.qr-container::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border: 2px solid #ffd700;
+  border-radius: 12px;
+  animation: pulse 2s infinite;
+  opacity: 0.5;
+}
+
+/* Estilos para el titular de cuenta */
+.account-holder {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 237, 78, 0.2));
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  position: relative;
+}
+
+.account-holder::before {
+  content: '🔒';
+  position: absolute;
+  top: -8px;
+  left: 10px;
+  background: #ffd700;
+  padding: 4px 8px;
+  border-radius: 50%;
+  font-size: 12px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .vip-card {
+    margin-bottom: 1rem;
+  }
+  
+  .upload-area {
+    padding: 1rem;
+  }
+  
+  .payment-icon {
+    font-size: 2rem !important;
+  }
+}
+
+/* Efectos de carga */
+.loading-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Estilos para los diálogos */
+.payment-dialog {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.payment-dialog .MuiDialog-paper {
+  background: rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Efectos para los botones de archivo */
+.file-input-button {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.file-input-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.file-input-button.has-file {
+  background: linear-gradient(45deg, #4caf50, #66bb6a) !important;
+}
+
+.file-input-button.has-file:hover {
+  background: linear-gradient(45deg, #43a047, #5cb85c) !important;
+}
+
+/* Animaciones de entrada */
+.fade-in {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.fade-in-delay-1 {
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.fade-in-delay-2 {
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.fade-in-delay-3 {
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+/* Estilos para el estado VIP activo */
+.vip-active-badge {
+  background: linear-gradient(45deg, #4caf50, #66bb6a);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: pulse 2s infinite;
+}
+
+/* Estilos para el estado pendiente */
+.pending-review-badge {
+  background: linear-gradient(45deg, #ff9800, #ffb74d);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Efectos de glassmorphism */
+.glass-card {
+  background: rgba(255, 255, 255, 0.25);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* Estilos para los iconos de verificación */
+.verification-icon {
+  color: #4caf50;
+  animation: pulse 1.5s infinite;
+}
+
+/* Efectos de hover para los métodos de pago */
+.payment-method-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.payment-method-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.payment-method-card.selected {
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+/* Estilos personalizados para SweetAlert2 */
+.swal-popup-custom {
+  border-radius: 20px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+  border: 2px solid #ffd700 !important;
+}
+
+.swal-title-custom {
+  color: #8C4EFF !important;
+  font-weight: bold !important;
+  font-size: 28px !important;
+}
+
+.swal-button-custom {
+  background: linear-gradient(45deg, #8C4EFF, #7113B8) !important;
+  border: none !important;
+  border-radius: 25px !important;
+  padding: 12px 30px !important;
+  font-weight: bold !important;
+  font-size: 16px !important;
+  transition: all 0.3s ease !important;
+}
+
+.swal-button-custom:hover {
+  background: linear-gradient(45deg, #5a6fd8, #6a4190) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Animación para el popup */
+.swal2-popup.swal2-show {
+  animation: swalSlideInUp 0.4s ease-out !important;
+}
+
+@keyframes swalSlideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

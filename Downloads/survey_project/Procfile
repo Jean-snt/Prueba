@@ -1,0 +1,15 @@
+# ============================================================================
+# PROCFILE - Configuración de procesos para Heroku y servicios similares
+# ============================================================================
+
+# Servidor web principal con Gunicorn
+web: gunicorn survey_project.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --threads 2 --timeout 120 --access-logfile - --error-logfile - --log-level info
+
+# Worker para tareas asíncronas con Celery (opcional, descomentar si se usa)
+# worker: celery -A survey_project worker --loglevel=info --concurrency=2
+
+# Scheduler para tareas periódicas con Celery Beat (opcional)
+# beat: celery -A survey_project beat --loglevel=info
+
+# Comando de release (ejecuta migraciones antes de deploy)
+release: python manage.py migrate --noinput && python manage.py collectstatic --noinput --clear

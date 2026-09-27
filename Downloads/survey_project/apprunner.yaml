@@ -1,0 +1,87 @@
+# ============================================================================
+# AWS APP RUNNER CONFIGURATION
+# ============================================================================
+# Configuración para despliegue en AWS App Runner
+# Documentación: https://docs.aws.amazon.com/apprunner/latest/dg/config-file.html
+
+version: 1.0
+
+runtime: python312
+
+build:
+  commands:
+    pre-build:
+      # Instalar dependencias
+      - echo "Installing dependencies..."
+      - pip install --upgrade pip
+      - pip install -r requirements.txt
+    
+    post-build:
+      # Colectar archivos estáticos
+      - echo "Collecting static files..."
+      - python manage.py collectstatic --noinput --clear
+      
+      # Ejecutar migraciones (PRECAUCIÓN: solo en primera ejecución o staging)
+      # Comentar en producción y ejecutar manualmente
+      # - python manage.py migrate --noinput
+
+run:
+  # Comando de inicio del servidor
+  command: gunicorn survey_project.wsgi:application --bind 0.0.0.0:8000 --workers 4 --threads 2 --timeout 120 --access-logfile - --error-logfile -
+  
+  # Directorio de red (no cambiar)
+  network:
+    port: 8000
+    env: PORT
+  
+  # Variables de entorno (se pueden sobrescribir en AWS Console)
+  env-vars:
+    - name: ENVIRONMENT
+      value: production
+    
+    - name: DEBUG
+      value: "False"
+    
+    - name: PYTHONUNBUFFERED
+      value: "1"
+    
+    - name: PORT
+      value: "8000"
+
+# ============================================================================
+# NOTAS IMPORTANTES:
+# ============================================================================
+# 
+# 1. VARIABLES DE ENTORNO SENSIBLES:
+#    Las siguientes variables DEBEN configurarse en AWS App Runner Console:
+#    - DATABASE_URL (RDS PostgreSQL connection string)
+#    - DJANGO_SECRET_KEY
+#    - ALLOWED_HOSTS
+#    - FRONTEND_URL
+#    - BACKEND_URL
+#    - EMAIL_HOST_USER
+#    - EMAIL_HOST_PASSWORD
+#    - PAYPAL_CLIENT_ID
+#    - PAYPAL_CLIENT_SECRET
+#
+# 2. MIGRACIONES:
+#    Por seguridad, NO ejecutes migraciones automáticas en producción.
+#    Ejecuta manualmente:
+#    - aws apprunner start-deployment --service-arn <ARN>
+#    - Luego conéctate al contenedor y ejecuta: python manage.py migrate
+#
+# 3. ARCHIVOS ESTÁTICOS:
+#    Los archivos estáticos se sirven con WhiteNoise en Django.
+#    Para mejor performance, considera usar CloudFront + S3.
+#
+# 4. HEALTH CHECK:
+#    App Runner hace health checks en la raíz (/).
+#    Asegúrate de tener un endpoint /health/ configurado.
+#
+# 5. AUTO SCALING:
+#    Configura auto-scaling en AWS Console según tráfico:
+#    - Min instances: 1
+#    - Max instances: 10
+#    - Target CPU: 70%
+#
+# ============================================================================

@@ -1,0 +1,49 @@
+"""{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Survey Project{% endblock %}</title>
+  <!-- Puedes enlazar tus CSS aquí -->
+  <link rel="stylesheet" href="{% static 'surveys/css/style.css' %}">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f7f7f7; }
+    header { background: #2b6cb0; color: white; padding: 12px 20px; }
+    header a { color: white; text-decoration: none; margin-right: 12px; }
+    main { padding: 20px; max-width: 900px; margin: 24px auto; background: white; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+    .messages { list-style: none; padding: 0; }
+    .messages li { padding: 10px; margin-bottom: 8px; border-radius: 4px; }
+    .messages li.success { background: #e6fffa; color: #065f46; border: 1px solid #bde5d8; }
+    .messages li.error { background: #ffe6e6; color: #7a1f1f; border: 1px solid #f5c2c2; }
+    footer { text-align:center; padding:12px; color:#666; font-size:14px; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="{% url 'surveys:survey_list' %}">Encuestas</a>
+    {% if user.is_authenticated %}
+      <span> | Hola, {{ user.username }} </span>
+      <a href="{% url 'logout' %}" style="margin-left:12px;">Cerrar sesión</a>
+    {% else %}
+      <a href="{% url 'login' %}" style="margin-left:12px;">Iniciar sesión</a>
+    {% endif %}
+  </header>
+
+  <main>
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    © {{ now.year }} Survey Project
+  </footer>
+</body>
+</html>

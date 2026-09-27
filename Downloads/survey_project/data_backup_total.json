@@ -1,0 +1,44 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$LRxGwHADL9ZPNoRTLdcGWp$KYwhHkdjByo+0tjCTy0n22THoUs7E0iApVJedzRPhbA=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@cuestom.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-04-09T00:55:46.313Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "surveys.userprofile",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "first_name": "",
+    "last_name": "",
+    "age": null,
+    "gender": null,
+    "country": null,
+    "phone_number": null,
+    "is_verified": false,
+    "verification_code": null,
+    "verification_code_expires": null,
+    "verification_attempts": 0,
+    "is_vip": false,
+    "karma": 0,
+    "last_username_change": null,
+    "report_count": 0,
+    "suspension_date": null,
+    "created_at": "2026-04-09T00:55:46.320Z",
+    "updated_at": "2026-04-09T00:55:48.491Z"
+  }
+}
+]
